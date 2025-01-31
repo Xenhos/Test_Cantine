@@ -1,0 +1,28 @@
+# Build / Binaries
+bin/
+obj/
+out/
+
+# User Config
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Logs / Temp
+*.log
+logs/
+*.tmp
+*.cache
+
+# Secrets / Keys
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Production.json
+secrets.json
+
+# Dependencies
+packages/
+node_modules/
