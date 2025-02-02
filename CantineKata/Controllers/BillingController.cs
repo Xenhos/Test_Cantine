@@ -33,7 +33,7 @@ public class BillingController : ControllerBase
         {
             return NotFound(new { message = "Customer not found." });
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(500, new { message = "An error occurred while processing payment." });
         }

@@ -22,7 +22,7 @@ public class CustomerService
         
             return customer;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw new CustomerNotFoundException();
         }

@@ -14,7 +14,7 @@ public class IntegrationTestBase : IAsyncLifetime
 
     public IntegrationTestBase()
     {
-        string mongoConnectionString = "mongodb+srv://vincentyvert:OwWe4hOx2JTAv0aw@cluster0.12bkz.mongodb.net/CantineKataDB?retryWrites=true&w=majority&appName=Cluster0";
+        string mongoConnectionString = "mongodb+srv://testuser:64v1HwFHfEShuBOH@cluster0.12bkz.mongodb.net/CantineKataDB?retryWrites=true&w=majority&appName=Cluster0";
 
         _mongoClient = new MongoClient(mongoConnectionString);
         var database = _mongoClient.GetDatabase("CantineKataDB");
