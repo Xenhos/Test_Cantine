@@ -19,4 +19,4 @@ app.MapControllers();
 
 app.Run("http://localhost:3001");
 
-public partial class Program {}
+public partial class Program{}

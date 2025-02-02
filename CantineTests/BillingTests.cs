@@ -31,7 +31,12 @@ public class BillingTests : IntegrationTestBase
 
         var receipt = await response.Content.ReadFromJsonAsync<Receipt>();
         Assert.NotNull(receipt);
-        Assert.Equal(10.0m, receipt.Total);
+        Assert.Equal(2.50m, receipt.Total);
+
+        var cResponse = await Client.GetAsync($"/api/customers/{customer.Id}");
+        var retrievedCustomer = await cResponse.Content.ReadFromJsonAsync<Customer>();
+        Assert.NotNull(retrievedCustomer);
+        Assert.Equal(17.50m, retrievedCustomer.Balance);
     }
 
     [Fact]
@@ -40,7 +45,7 @@ public class BillingTests : IntegrationTestBase
         var newCustomer = new Customer
         {
             Name = "Jane Doe",
-            Type = CustomerType.Contractor,
+            Type = CustomerType.Visitor,
             Balance = 2.0m
         };
         await Context.Customers.InsertOneAsync(newCustomer);

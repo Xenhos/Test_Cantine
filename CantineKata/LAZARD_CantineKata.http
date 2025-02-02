@@ -1,6 +1,0 @@
-@LAZARD_CantineKata_HostAddress = http://localhost:5114
-
-GET {{LAZARD_CantineKata_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

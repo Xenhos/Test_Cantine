@@ -16,6 +16,11 @@ public class BillingService
         var customer = await _customers.Find(c => c.Id == customerId).FirstOrDefaultAsync();
         if (customer == null) throw new CustomerNotFoundException();
 
+        foreach (var product in mealTray.Products)
+        {
+            product.Id = null;
+        }
+
         decimal totalPrice = CalculateMealPrice(mealTray, customer.Type);
         if (customer.Balance < totalPrice && customer.Type != CustomerType.Internal && customer.Type != CustomerType.VIP)
             throw new InsufficientBalanceException();
@@ -25,6 +30,7 @@ public class BillingService
 
         var receipt = new Receipt
         {
+            CustomerId = customerId,
             Products = mealTray.Products,
             Total = totalPrice
         };
@@ -38,20 +44,12 @@ public class BillingService
     {
         decimal total = 0m;
 
-        if (mealTray.Products.Count == 4 &&
-            mealTray.Products.Exists(p => p.Type == ProductType.Starter) &&
-            mealTray.Products.Exists(p => p.Type == ProductType.MainCourse) &&
-            mealTray.Products.Exists(p => p.Type == ProductType.Dessert) &&
-            mealTray.Products.Exists(p => p.Type == ProductType.Bread))
-        {
+        if (IsFixedMealPrice(mealTray))
             total = 10.0m;
-        }
         else
         {
             foreach (var product in mealTray.Products)
-            {
                 total += product.Price;
-            }
         }
 
         total -= customerType switch
@@ -64,5 +62,14 @@ public class BillingService
         };
 
         return total < 0 ? 0 : total;
+    }
+
+    private bool IsFixedMealPrice(MealTray mealTray)
+    {
+        return mealTray.Products.Count == 4 &&
+               mealTray.Products.Exists(p => p.Type == ProductType.Starter) &&
+               mealTray.Products.Exists(p => p.Type == ProductType.MainCourse) &&
+               mealTray.Products.Exists(p => p.Type == ProductType.Dessert) &&
+               mealTray.Products.Exists(p => p.Type == ProductType.Bread);
     }
 }

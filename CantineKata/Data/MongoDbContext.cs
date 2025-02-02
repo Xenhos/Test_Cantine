@@ -11,8 +11,6 @@ public class MongoDbContext
         {
             var client = new MongoClient(settings.Value.ConnectionString);
             _database = client.GetDatabase(settings.Value.DatabaseName);
-
-            //Console.WriteLine("Connected to MongoDB Atlas successfully!");
         }
         catch (Exception ex)
         {

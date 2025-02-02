@@ -49,8 +49,6 @@ public class CustomersController : ControllerBase
 
         try
         {
-            customer.Id = null;
-
             var newCustomer = await _customerService.AddCustomerAsync(customer);
             return CreatedAtAction(nameof(GetCustomerById), new { id = newCustomer.Id }, newCustomer);
         }

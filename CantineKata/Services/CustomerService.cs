@@ -13,16 +13,27 @@ public class CustomerService
 
     public async Task<Customer> GetCustomerByIdAsync(string customerId)
     {
-        var customer = await _customers.Find(c => c.Id == customerId).FirstOrDefaultAsync();
-        if (customer == null)
-            throw new CustomerNotFoundException();
+        try
+        {
+            var customer = await _customers.Find(c => c.Id == customerId).FirstOrDefaultAsync();
+
+            if (customer == null)
+                throw new CustomerNotFoundException();
         
-        return customer;
+            return customer;
+        }
+        catch (Exception ex)
+        {
+            throw new CustomerNotFoundException();
+        }
+        
     }
     public async Task<Customer> AddCustomerAsync(Customer customer)
     {
         if (customer == null)
             throw new CustomerNotFoundException();
+
+        customer.Id = null;
 
         await _customers.InsertOneAsync(customer);
         

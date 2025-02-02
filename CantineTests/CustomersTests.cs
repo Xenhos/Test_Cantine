@@ -34,7 +34,7 @@ public class CustomersTests : IntegrationTestBase
         await Context.Customers.InsertOneAsync(newCustomer);
 
         var response = await Client.GetAsync($"/api/customers/{newCustomer.Id}");
-        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         
         var retrievedCustomer = await response.Content.ReadFromJsonAsync<Customer>();
         Assert.NotNull(retrievedCustomer);
@@ -59,7 +59,7 @@ public class CustomersTests : IntegrationTestBase
     [Fact]
     public async Task GetCustomer_ShouldReturnNotFound_WhenCustomerDoesNotExist()
     {
-        var response = await Client.GetAsync("/api/customers/invalid-id");
+        var response = await Client.GetAsync("/api/customers/invalidid");
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

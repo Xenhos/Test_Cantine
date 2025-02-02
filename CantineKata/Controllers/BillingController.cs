@@ -19,11 +19,6 @@ public class BillingController : ControllerBase
             return BadRequest(new { message = "MealTray cannot be empty." });
         }
 
-        foreach (var product in mealTray.Products)
-        {
-            product.Id = null;
-        }
-
         try
         {
             var receipt = await _billingService.ProcessPayment(customerId, mealTray);
@@ -40,7 +35,7 @@ public class BillingController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { message = "An error occurred while processing payment.", error = ex.Message });
+            return StatusCode(500, new { message = "An error occurred while processing payment." });
         }
     }
 }
