@@ -20,6 +20,7 @@ public class CustomersTests : IntegrationTestBase
         Assert.NotNull(createdCustomer);
         Assert.Equal("John Doe", createdCustomer.Name);
         Assert.Equal(CustomerType.Internal, createdCustomer.Type);
+        Assert.Equal(20.0m, createdCustomer.Balance);
     }
 
     [Fact]
@@ -27,7 +28,7 @@ public class CustomersTests : IntegrationTestBase
     {
         var newCustomer = new Customer
         {
-            Name = "Jane Doe",
+            Name = "John Doe",
             Type = CustomerType.Contractor,
             Balance = 15.0m
         };
@@ -40,20 +41,42 @@ public class CustomersTests : IntegrationTestBase
         Assert.NotNull(retrievedCustomer);
         Assert.Equal(newCustomer.Id, retrievedCustomer.Id);
         Assert.Equal(newCustomer.Name, retrievedCustomer.Name);
+        Assert.Equal(newCustomer.Type, retrievedCustomer.Type);
+        Assert.Equal(newCustomer.Balance, retrievedCustomer.Balance);
     }
 
     [Fact]
     public async Task CreateCustomer_ShouldReturnBadRequest_WhenInvalidData()
     {
-        var invalidCustomer = new Customer
+        var invalidNameCustomer = new Customer
         {
             Name = "",
+            Type = CustomerType.Internal,
+            Balance = 20.0m
+        };
+
+        var invalidTypeCustomer = new Customer
+        {
+            Name = "John Doe",
+            Type = (CustomerType)10,
+            Balance = 20.0m
+        };
+
+        var invalidBalanceCustomer = new Customer
+        {
+            Name = "Jane Doe",
             Type = CustomerType.Internal,
             Balance = -5.0m
         };
 
-        var response = await Client.PostAsJsonAsync("/api/customers", invalidCustomer);
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        var nameResponse = await Client.PostAsJsonAsync("/api/customers", invalidNameCustomer);
+        Assert.Equal(HttpStatusCode.BadRequest, nameResponse.StatusCode);
+
+        var typeResponse = await Client.PostAsJsonAsync("/api/customers", invalidTypeCustomer);
+        Assert.Equal(HttpStatusCode.BadRequest, typeResponse.StatusCode);
+
+        var balanceResponse = await Client.PostAsJsonAsync("/api/customers", invalidBalanceCustomer);
+        Assert.Equal(HttpStatusCode.BadRequest, balanceResponse.StatusCode);
     }
 
     [Fact]

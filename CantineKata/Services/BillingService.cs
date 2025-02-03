@@ -14,7 +14,8 @@ public class BillingService
     public async Task<Receipt?> ProcessPayment(string customerId, MealTray mealTray)
     {
         var customer = await _customers.Find(c => c.Id == customerId).FirstOrDefaultAsync();
-        if (customer == null) throw new CustomerNotFoundException();
+        if (customer == null)
+            throw new CustomerNotFoundException();
 
         foreach (var product in mealTray.Products)
         {

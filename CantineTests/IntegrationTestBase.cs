@@ -14,10 +14,11 @@ public class IntegrationTestBase : IAsyncLifetime
 
     public IntegrationTestBase()
     {
+        //Letting this in clear for the sake of the tests but in a real world scenario, this should be in a configuration file
         string mongoConnectionString = "mongodb+srv://testuser:64v1HwFHfEShuBOH@cluster0.12bkz.mongodb.net/CantineKataDB?retryWrites=true&w=majority&appName=Cluster0";
 
         _mongoClient = new MongoClient(mongoConnectionString);
-        var database = _mongoClient.GetDatabase("CantineKataDB");
+        
         var settings = Options.Create(new MongoDbSettings
         {
             ConnectionString = mongoConnectionString,
@@ -25,8 +26,7 @@ public class IntegrationTestBase : IAsyncLifetime
         });
 
         Context = new MongoDbContext(settings);
-         _database = _mongoClient.GetDatabase("CantineKataDB");
-        //Client = new HttpClient { BaseAddress = new Uri("http://localhost:3001") };
+        _database = _mongoClient.GetDatabase(settings.Value.DatabaseName);
 
         _factory = new WebApplicationFactory<Program>();
         Client = _factory.CreateClient();
@@ -42,22 +42,20 @@ public class IntegrationTestBase : IAsyncLifetime
     }
 
     private async Task ClearDatabase()
-{
-    using (var collectionsCursor = await _database.ListCollectionNamesAsync())
     {
+        using var collectionsCursor = await _database.ListCollectionNamesAsync();
         var collections = await collectionsCursor.ToListAsync();
         foreach (var collection in collections)
         {
             await _database.DropCollectionAsync(collection);
         }
     }
-}
 
 
     public Task DisposeAsync()
     {
-        //_mongoClient.DropDatabase("CantineTestDB");
         _factory.Dispose();
+
         return Task.CompletedTask;
     }
 }

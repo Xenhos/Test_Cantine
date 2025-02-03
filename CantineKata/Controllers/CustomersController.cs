@@ -38,18 +38,18 @@ public class CustomersController : ControllerBase
     public async Task<IActionResult> CreateCustomer([FromBody] Customer customer)
     {
         if (!Enum.IsDefined(typeof(CustomerType), customer.Type))
-        {
             return BadRequest("Invalid customer type.");
-        }
 
         if (string.IsNullOrWhiteSpace(customer.Name))
-        {
             return BadRequest("Customer name is required.");
-        }
+
+        if (customer.Balance < 0)
+            return BadRequest("Balance cannot be negative.");
 
         try
         {
             var newCustomer = await _customerService.AddCustomerAsync(customer);
+            
             return CreatedAtAction(nameof(GetCustomerById), new { id = newCustomer.Id }, newCustomer);
         }
         catch (ArgumentException ex)
